@@ -68,6 +68,34 @@ class ParseResult:
         return not self.errors
 
 
+@dataclass(frozen=True, slots=True)
+class ClientRecord:
+    client_name: str
+    gstin: str
+    username: str
+    client_email: str
+    financial_year: str
+    active: bool
+    priority: str
+    tags: str | None
+    preferred_run_window: int
+    notes: str | None
+    client_id: str | None = None
+    password: str | None = None
+    rownum: int | None = None
+
+
+@dataclass(frozen=True, slots=True)
+class TypedParseResult:
+    records: list[ClientRecord]
+    errors: list[RowError]
+    headers: list[str]
+
+    @property
+    def ok(self) -> bool:
+        return not self.errors
+
+
 def _norm_str(v: object | None) -> str | None:
     if v is None:
         return None
@@ -83,7 +111,10 @@ def _norm_header(v: object | None) -> str | None:
     s = _norm_str(v)
     if s is None:
         return None
-    return s.strip().lower()
+    # Normalize headers to match deterministic expected column keys.
+    # Example: "Client Name" -> "client_name"
+    s2 = re.sub(r"\s+", "_", s.strip().lower())
+    return s2
 
 
 def _parse_bool(v: str | None) -> bool | None:
@@ -248,3 +279,44 @@ class ClientMasterParser:
             errors=int(len(errors)),
         )
         return ParseResult(rows=rows, errors=errors)
+
+    def parse_records(self) -> TypedParseResult:
+        parsed = self.parse()
+        if not parsed.ok:
+            # Preserve existing RowError detail for deterministic troubleshooting.
+            return TypedParseResult(records=[], errors=parsed.errors, headers=COLUMNS)
+
+        typed: list[ClientRecord] = []
+        type_errors: list[RowError] = []
+        for r in parsed.rows:
+            rownum = int(r.get("__rownum") or 0) or None
+            try:
+                preferred_run_window = int(str(r.get("preferred_run_window") or "18"))
+            except Exception:
+                preferred_run_window = 18
+                type_errors.append(RowError(row=rownum or 0, field="preferred_run_window", message="invalid int"))
+            active = str(r.get("active") or "FALSE").upper() == "TRUE"
+            rec = ClientRecord(
+                client_id=str(r.get("client_id") or "").strip() or None,
+                client_name=str(r.get("client_name") or "").strip(),
+                gstin=str(r.get("gstin") or "").strip().upper(),
+                username=str(r.get("username") or "").strip(),
+                password=str(r.get("password") or "") or None,
+                client_email=str(r.get("client_email") or "").strip(),
+                financial_year=str(r.get("financial_year") or "").strip(),
+                active=active,
+                priority=str(r.get("priority") or "").strip().upper(),
+                tags=str(r.get("tags") or "").strip() or None,
+                preferred_run_window=preferred_run_window,
+                notes=str(r.get("notes") or "").strip() or None,
+                rownum=rownum,
+            )
+            typed.append(rec)
+
+        logger.info(
+            "client_master.typed",
+            headers=COLUMNS,
+            records=int(len(typed)),
+            type_errors=int(len(type_errors)),
+        )
+        return TypedParseResult(records=typed, errors=type_errors, headers=COLUMNS)

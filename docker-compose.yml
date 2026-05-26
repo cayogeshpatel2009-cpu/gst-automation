@@ -34,8 +34,8 @@ services:
     env_file:
       - .env
     volumes:
-      # Persist deterministic artifacts and expose CAPTCHA/trace outputs to the operator on the host.
-      - ./data:/app/data
+      # Mount project root so runtime can access operator-provided artifacts (e.g. client_master.xlsx).
+      - ./:/app
     environment:
       # Inside compose network, service hostnames must be used (not localhost).
       DATABASE_URL: postgresql+asyncpg://postgres:gst123@postgres:5432/gstautomation
@@ -61,8 +61,7 @@ services:
     env_file:
       - .env
     volumes:
-      # Persist deterministic artifacts and expose CAPTCHA/trace outputs to the operator on the host.
-      - ./data:/app/data
+      - ./:/app
     environment:
       WORKER_QUEUES: downloads,critical
       # Inside compose network, service hostnames must be used (not localhost).
@@ -88,7 +87,7 @@ services:
     env_file:
       - .env
     volumes:
-      - ./data:/app/data
+      - ./:/app
     environment:
       WORKER_QUEUES: monitoring,maintenance
       # Inside compose network, service hostnames must be used (not localhost).
@@ -114,7 +113,7 @@ services:
     env_file:
       - .env
     volumes:
-      - ./data:/app/data
+      - ./:/app
     environment:
       # Inside compose network, service hostnames must be used (not localhost).
       DATABASE_URL: postgresql+asyncpg://postgres:gst123@postgres:5432/gstautomation

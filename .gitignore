@@ -14,3 +14,14 @@ htmlcov/
 .DS_Store
 alembic/versions/*.pyc
 data/
+# Environment
+.env
+
+# Logs
+*.log
+
+# Temp debug files
+_tmp*
+_inspect*
+_runtime*
+_exec*

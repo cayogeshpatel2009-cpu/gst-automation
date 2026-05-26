@@ -19,7 +19,6 @@ from typing import Callable, Awaitable, Any
 
 import redis.asyncio as redis
 from aiogram import Bot, Router, types
-from aiogram.filters import Command
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton, InputFile
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -27,6 +26,7 @@ from gst_automation.core.logging import get_logger
 from gst_automation.core.settings import Settings
 from gst_automation.db.models.telegram import TelegramUser, TelegramMessage, TelegramAudit
 from gst_automation.db.models.gst.operator_checkpoint import OperatorCheckpoint
+from gst_automation.telegram_bot.commands import build_command_router
 
 logger = get_logger(__name__)
 
@@ -67,98 +67,7 @@ class TelegramClient:
             polling_timeout_seconds=int(settings.telegram_polling_timeout_seconds or 30),
         )
         self.bot = Bot(token=self.config.token)
-        self.router = Router()
-        self._register_handlers()
-
-    def _register_handlers(self) -> None:
-        """Register command and message handlers."""
-        self.router.message.register(self._handle_start, Command("start"))
-        self.router.message.register(self._handle_status, Command("status"))
-        self.router.message.register(self._handle_help, Command("help"))
-        self.router.message.register(self._handle_whoami, Command("whoami"))
-        self.router.message.register(self._handle_ping, Command("ping"))
-
-    def _is_allowed(self, *, telegram_user_id: int, chat_id: int) -> bool:
-        allowed = {int(x) for x in (self.settings.telegram_allowed_user_ids or [])}
-        return (telegram_user_id in allowed) or (chat_id in allowed)
-
-    async def _reject_if_not_allowed(self, message: types.Message) -> bool:
-        user = message.from_user
-        if not user:
-            return True
-        uid = int(user.id)
-        chat_id = int(message.chat.id)
-        if not self._is_allowed(telegram_user_id=uid, chat_id=chat_id):
-            logger.warning("telegram.update_rejected", telegram_user_id=uid, chat_id=chat_id)
-            await message.answer("Not authorized.")
-            return True
-        return False
-
-    async def _handle_start(self, message: types.Message) -> None:
-        """Handle /start command."""
-        logger.info("telegram.command.start.invoked", message_id=getattr(message, "message_id", None))
-        if await self._reject_if_not_allowed(message):
-            return
-        try:
-            await message.answer("GST Bot active. Use /help for commands.")
-        except Exception as exc:  # noqa: BLE001
-            logger.error("telegram.command.start.reply_failed", err=str(exc))
-
-    async def _handle_status(self, message: types.Message) -> None:
-        """Handle /status command."""
-        logger.info("telegram.command.status.invoked", message_id=getattr(message, "message_id", None))
-        if await self._reject_if_not_allowed(message):
-            return
-        try:
-            await message.answer("Status: All systems nominal.")
-        except Exception as exc:  # noqa: BLE001
-            logger.error("telegram.command.status.reply_failed", err=str(exc))
-
-    async def _handle_help(self, message: types.Message) -> None:
-        """Handle /help command."""
-        logger.info("telegram.command.help.invoked", message_id=getattr(message, "message_id", None))
-        if await self._reject_if_not_allowed(message):
-            return
-        help_text = """
-GST Automation Bot Commands:
-
-/start - Initialize bot
-/status - Check current status
-/pending - Show pending actions
-/start_download - Begin GSTR-2B download
-/pause - Pause current job
-/resume - Resume paused job
-/retry_failed - Retry failed accounts
-/help - Show this help message
-"""
-        try:
-            await message.answer(help_text)
-        except Exception as exc:  # noqa: BLE001
-            logger.error("telegram.command.help.reply_failed", err=str(exc))
-
-    async def _handle_whoami(self, message: types.Message) -> None:
-        """Return deterministic IDs for allowlist troubleshooting."""
-        logger.info("telegram.command.whoami.invoked", message_id=getattr(message, "message_id", None))
-        user = message.from_user
-        if not user:
-            return
-        uid = int(user.id)
-        chat_id = int(message.chat.id)
-        allowed = self._is_allowed(telegram_user_id=uid, chat_id=chat_id)
-        try:
-            await message.answer(f"telegram_user_id={uid}\nchat_id={chat_id}\nallowed={str(allowed).lower()}")
-        except Exception as exc:  # noqa: BLE001
-            logger.error("telegram.command.whoami.reply_failed", err=str(exc))
-
-    async def _handle_ping(self, message: types.Message) -> None:
-        """Minimal deterministic health check command."""
-        logger.info("telegram.command.ping.invoked", message_id=getattr(message, "message_id", None))
-        if await self._reject_if_not_allowed(message):
-            return
-        try:
-            await message.answer("pong")
-        except Exception as exc:  # noqa: BLE001
-            logger.error("telegram.command.ping.reply_failed", err=str(exc))
+        self.router = build_command_router(settings=self.settings, redis_client=self.redis)
 
     async def send_message(
         self,

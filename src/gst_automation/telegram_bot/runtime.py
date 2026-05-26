@@ -10,7 +10,6 @@ from typing import Any
 
 import redis.asyncio as redis
 from aiogram import Bot, Dispatcher, Router, F
-from aiogram.filters import Command
 from aiogram.types import Message, Update
 
 from gst_automation.core.logging import get_logger
