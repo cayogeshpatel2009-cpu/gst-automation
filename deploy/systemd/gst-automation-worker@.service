@@ -1,0 +1,27 @@
+[Unit]
+Description=GST Automation Platform Worker (%i)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=gst
+Group=gst
+WorkingDirectory=/opt/gst-automation
+EnvironmentFile=/etc/gst-automation/.env
+Environment=WORKER_QUEUES=%i
+ExecStart=/opt/gst-automation/.venv/bin/celery -A gst_automation.celery_app.celery:celery_app worker -Q %i -l INFO
+Restart=always
+RestartSec=2
+TimeoutStopSec=60
+KillSignal=SIGTERM
+
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/opt/gst-automation/data
+
+[Install]
+WantedBy=multi-user.target
+

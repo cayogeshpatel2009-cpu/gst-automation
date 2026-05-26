@@ -1,0 +1,27 @@
+[Unit]
+Description=GST Automation Platform API
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=gst
+Group=gst
+WorkingDirectory=/opt/gst-automation
+EnvironmentFile=/etc/gst-automation/.env
+ExecStart=/opt/gst-automation/.venv/bin/python -m gst_automation.cli.api
+Restart=always
+RestartSec=2
+TimeoutStopSec=30
+KillSignal=SIGINT
+
+# Basic hardening
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/opt/gst-automation/data
+
+[Install]
+WantedBy=multi-user.target
+

@@ -1,0 +1,2 @@
+"""Credential vault abstraction layer."""
+

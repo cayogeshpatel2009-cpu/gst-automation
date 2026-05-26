@@ -1,0 +1,135 @@
+services:
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-gstautomation}
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-gst123}
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-gstautomation}"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  api:
+    build:
+      context: .
+      args:
+        INSTALL_PLAYWRIGHT_BROWSERS: "1"
+    restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+      # Persist deterministic artifacts and expose CAPTCHA/trace outputs to the operator on the host.
+      - ./data:/app/data
+    environment:
+      # Inside compose network, service hostnames must be used (not localhost).
+      DATABASE_URL: postgresql+asyncpg://postgres:gst123@postgres:5432/gstautomation
+      DATABASE_MIGRATION_URL: postgresql+psycopg://postgres:gst123@postgres:5432/gstautomation
+      REDIS_URL: redis://redis:6379/0
+      CELERY_BROKER_URL: redis://redis:6379/1
+      CELERY_RESULT_BACKEND: redis://redis:6379/2
+      VAULT_PROVIDER: file
+      VAULT_MASTER_KEY: ${VAULT_MASTER_KEY}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    ports:
+      - "8000:8000"
+
+  worker_downloads:
+    build:
+      context: .
+      args:
+        INSTALL_PLAYWRIGHT_BROWSERS: "1"
+    env_file:
+      - .env
+    volumes:
+      # Persist deterministic artifacts and expose CAPTCHA/trace outputs to the operator on the host.
+      - ./data:/app/data
+    environment:
+      WORKER_QUEUES: downloads,critical
+      # Inside compose network, service hostnames must be used (not localhost).
+      DATABASE_URL: postgresql+asyncpg://postgres:gst123@postgres:5432/gstautomation
+      DATABASE_MIGRATION_URL: postgresql+psycopg://postgres:gst123@postgres:5432/gstautomation
+      REDIS_URL: redis://redis:6379/0
+      CELERY_BROKER_URL: redis://redis:6379/1
+      CELERY_RESULT_BACKEND: redis://redis:6379/2
+      VAULT_PROVIDER: file
+      VAULT_MASTER_KEY: ${VAULT_MASTER_KEY}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    command: ["celery", "-A", "gst_automation.celery_app.celery:celery_app", "worker", "-Q", "downloads,critical", "-l", "INFO"]
+
+  worker_monitoring:
+    build:
+      context: .
+      args:
+        INSTALL_PLAYWRIGHT_BROWSERS: "1"
+    env_file:
+      - .env
+    volumes:
+      - ./data:/app/data
+    environment:
+      WORKER_QUEUES: monitoring,maintenance
+      # Inside compose network, service hostnames must be used (not localhost).
+      DATABASE_URL: postgresql+asyncpg://postgres:gst123@postgres:5432/gstautomation
+      DATABASE_MIGRATION_URL: postgresql+psycopg://postgres:gst123@postgres:5432/gstautomation
+      REDIS_URL: redis://redis:6379/0
+      CELERY_BROKER_URL: redis://redis:6379/1
+      CELERY_RESULT_BACKEND: redis://redis:6379/2
+      VAULT_PROVIDER: file
+      VAULT_MASTER_KEY: ${VAULT_MASTER_KEY}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    command: ["celery", "-A", "gst_automation.celery_app.celery:celery_app", "worker", "-Q", "monitoring,maintenance", "-l", "INFO"]
+
+  beat:
+    build:
+      context: .
+      args:
+        INSTALL_PLAYWRIGHT_BROWSERS: "1"
+    env_file:
+      - .env
+    volumes:
+      - ./data:/app/data
+    environment:
+      # Inside compose network, service hostnames must be used (not localhost).
+      DATABASE_URL: postgresql+asyncpg://postgres:gst123@postgres:5432/gstautomation
+      DATABASE_MIGRATION_URL: postgresql+psycopg://postgres:gst123@postgres:5432/gstautomation
+      REDIS_URL: redis://redis:6379/0
+      CELERY_BROKER_URL: redis://redis:6379/1
+      CELERY_RESULT_BACKEND: redis://redis:6379/2
+      VAULT_PROVIDER: file
+      VAULT_MASTER_KEY: ${VAULT_MASTER_KEY}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    command: ["celery", "-A", "gst_automation.celery_app.celery:celery_app", "beat", "-l", "INFO"]
+
+volumes:
+  pg_data:

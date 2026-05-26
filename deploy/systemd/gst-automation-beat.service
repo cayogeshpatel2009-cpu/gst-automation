@@ -1,0 +1,26 @@
+[Unit]
+Description=GST Automation Platform Celery Beat
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=gst
+Group=gst
+WorkingDirectory=/opt/gst-automation
+EnvironmentFile=/etc/gst-automation/.env
+ExecStart=/opt/gst-automation/.venv/bin/celery -A gst_automation.celery_app.celery:celery_app beat -l INFO
+Restart=always
+RestartSec=2
+TimeoutStopSec=30
+KillSignal=SIGTERM
+
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/opt/gst-automation/data
+
+[Install]
+WantedBy=multi-user.target
+

@@ -1,0 +1,42 @@
+[log] Login flag from einvoice is : undefined
+[log] value of hidemenu outside if is : false
+[log] Value of Enable Einv dashboard is :True
+[error] Error: [$compile:nodomevents] http://errors.angularjs.org/1.5.6/$compile/nodomevents
+    at https://static.gst.gov.in/uiassets/javascripts/fwk/angular-all1.0.js:6:412
+    at Object.pre (https://static.gst.gov.in/uiassets/javascripts/fwk/angular-all1.0.js:79:244)
+    at https://static.gst.gov.in/uiassets/javascripts/fwk/angular-all1.0.js:16:230
+    at ia (https://static.gst.gov.in/uiassets/javascripts/fwk/angular-all1.0.js:81:35)
+    at n (https://static.gst.gov.in/uiassets/javascripts/fwk/angular-all1.0.js:65:490)
+    at g (https://static.gst.gov.in/uiassets/javascripts/fwk/angular-all1.0.js:58:429)
+    at n (https://static.gst.gov.in/uiassets/javascripts/fwk/angular-all1.0.js:66:115)
+    at g (https://static.gst.gov.in/uiassets/javascripts/fwk/angular-all1.0.js:58:429)
+    at g (https://static.gst.gov.in/uiassets/javascripts/fwk/angular-all1.0.js:58:446)
+    at g (https://static.gst.gov.in/uiassets/javascripts/fwk/angular-all1.0.js:58:446) 25-05-2026 11:52:01 AM
+[log] View loaded
+[info] Autofocus processing was blocked because a document already has a focused element.
+[log] Login flag from einvoice is : undefined
+[log] value of hidemenu outside if is : false
+[log] Value of Enable Einv dashboard is :True
+[error] Error: [$compile:nodomevents] http://errors.angularjs.org/1.5.6/$compile/nodomevents
+    at https://static.gst.gov.in/uiassets/javascripts/fwk/angular-all1.0.js:6:412
+    at Object.pre (https://static.gst.gov.in/uiassets/javascripts/fwk/angular-all1.0.js:79:244)
+    at https://static.gst.gov.in/uiassets/javascripts/fwk/angular-all1.0.js:16:230
+    at ia (https://static.gst.gov.in/uiassets/javascripts/fwk/angular-all1.0.js:81:35)
+    at n (https://static.gst.gov.in/uiassets/javascripts/fwk/angular-all1.0.js:65:490)
+    at g (https://static.gst.gov.in/uiassets/javascripts/fwk/angular-all1.0.js:58:429)
+    at n (https://static.gst.gov.in/uiassets/javascripts/fwk/angular-all1.0.js:66:115)
+    at g (https://static.gst.gov.in/uiassets/javascripts/fwk/angular-all1.0.js:58:429)
+    at g (https://static.gst.gov.in/uiassets/javascripts/fwk/angular-all1.0.js:58:446)
+    at g (https://static.gst.gov.in/uiassets/javascripts/fwk/angular-all1.0.js:58:446) 25-05-2026 11:52:02 AM
+[log] View loaded
+[info] Autofocus processing was blocked because a document already has a focused element.
+[error] TypeError: Cannot set properties of undefined (setting 'mFP')
+    at $scope.saveUserLogin (https://static.gst.gov.in/uiassets/js/services/loginCtrl1.3.js:370:26)
+    at fn (eval at compile (https://static.gst.gov.in/uiassets/javascripts/fwk/angular-all1.0.js:231:126), <anonymous>:4:230)
+    at b (https://static.gst.gov.in/uiassets/javascripts/fwk/angular-all1.0.js:126:19)
+    at e (https://static.gst.gov.in/uiassets/javascripts/fwk/angular-all1.0.js:274:195)
+    at m.$eval (https://static.gst.gov.in/uiassets/javascripts/fwk/angular-all1.0.js:145:107)
+    at m.$apply (https://static.gst.gov.in/uiassets/javascripts/fwk/angular-all1.0.js:145:340)
+    at HTMLFormElement.<anonymous> (https://static.gst.gov.in/uiassets/javascripts/fwk/angular-all1.0.js:274:247)
+    at HTMLFormElement.dispatch (https://static.gst.gov.in/uiassets/javascripts/fwk/uiscriptsupgrd.js:1:42781)
+    at g.handle (https://static.gst.gov.in/uiassets/javascripts/fwk/uiscriptsupgrd.js:1:40778) 25-05-2026 11:52:04 AM

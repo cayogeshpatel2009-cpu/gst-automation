@@ -1,0 +1,3 @@
+{"context_id":"03f4b627-99f3-4801-8d0f-8e0c255444eb","job_id":"695f5366-cc89-4c27-8c77-6ff65ef34e34","start_url":"https://services.gst.gov.in","ts_ms":1779683083099,"type":"gst_observation.start"}
+{"ts_ms":1779683083451,"type":"nav","url":"https://services.gst.gov.in/services/login"}
+{"state":"login","ts_ms":1779683084982,"type":"auth.state","url":"https://services.gst.gov.in/services/login"}

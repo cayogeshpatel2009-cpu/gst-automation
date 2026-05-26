@@ -1,0 +1,11 @@
+{
+  "auth_page_path": "data/current_auth_page.png",
+  "captcha_image_path": "data/current_captcha.png",
+  "checkpoint_id": "6925e02a-65b0-474f-9893-adc9b6445311",
+  "failure_count": 0,
+  "job_id": "29441040-632a-46af-ae5c-bd513095adcb",
+  "refresh_count": 0,
+  "status": "waiting:login_page",
+  "updated_at": "2026-05-25T06:22:05.505774+00:00",
+  "url": "https://services.gst.gov.in/services/login"
+}

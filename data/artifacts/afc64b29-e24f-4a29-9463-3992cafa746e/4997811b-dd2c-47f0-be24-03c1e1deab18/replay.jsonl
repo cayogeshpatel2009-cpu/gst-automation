@@ -1,0 +1,5 @@
+{"context_id":"4997811b-dd2c-47f0-be24-03c1e1deab18","job_id":"afc64b29-e24f-4a29-9463-3992cafa746e","start_url":"https://services.gst.gov.in","ts_ms":1779689000824,"type":"gst_observation.start"}
+{"ts_ms":1779689001257,"type":"nav","url":"https://services.gst.gov.in/services/login"}
+{"state":"login","ts_ms":1779689002838,"type":"auth.state","url":"https://services.gst.gov.in/services/login"}
+{"ts_ms":1779689002965,"type":"nav","url":"https://services.gst.gov.in/services/error/accessdenied"}
+{"state":"session_expired","ts_ms":1779689003414,"type":"auth.state","url":"https://services.gst.gov.in/services/error/accessdenied"}

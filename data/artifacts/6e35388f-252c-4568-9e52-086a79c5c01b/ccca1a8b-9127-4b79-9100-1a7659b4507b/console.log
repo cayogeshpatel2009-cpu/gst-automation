@@ -1,0 +1,16 @@
+[log] Login flag from einvoice is : undefined
+[log] value of hidemenu outside if is : false
+[log] Value of Enable Einv dashboard is :True
+[error] Error: [$compile:nodomevents] http://errors.angularjs.org/1.5.6/$compile/nodomevents
+    at https://static.gst.gov.in/uiassets/javascripts/fwk/angular-all1.0.js:6:412
+    at Object.pre (https://static.gst.gov.in/uiassets/javascripts/fwk/angular-all1.0.js:79:244)
+    at https://static.gst.gov.in/uiassets/javascripts/fwk/angular-all1.0.js:16:230
+    at ia (https://static.gst.gov.in/uiassets/javascripts/fwk/angular-all1.0.js:81:35)
+    at n (https://static.gst.gov.in/uiassets/javascripts/fwk/angular-all1.0.js:65:490)
+    at g (https://static.gst.gov.in/uiassets/javascripts/fwk/angular-all1.0.js:58:429)
+    at n (https://static.gst.gov.in/uiassets/javascripts/fwk/angular-all1.0.js:66:115)
+    at g (https://static.gst.gov.in/uiassets/javascripts/fwk/angular-all1.0.js:58:429)
+    at g (https://static.gst.gov.in/uiassets/javascripts/fwk/angular-all1.0.js:58:446)
+    at g (https://static.gst.gov.in/uiassets/javascripts/fwk/angular-all1.0.js:58:446) 22-05-2026 02:46:19 PM
+[log] View loaded
+[info] Autofocus processing was blocked because a document already has a focused element.
