@@ -1,5 +1,0 @@
-[2026-05-22 09:54:46,677: INFO/MainProcess] Connected to redis://localhost:6379/1
-[2026-05-22 09:54:46,750: INFO/MainProcess] mingle: searching for neighbors
-[2026-05-22 09:54:47,796: INFO/MainProcess] mingle: all alone
-[2026-05-22 09:54:47,831: INFO/MainProcess] celery@Atharv ready.
-[2026-05-22 09:54:57,767: WARNING/MainProcess] Got shutdown from remote
